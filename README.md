@@ -71,7 +71,7 @@ GEMINI_API_KEY=your_gemini_api_key_here
 PYTHON_API_URL=http://localhost:8001
 ```
 
-Get your Gemini API key: [Google AI Studio](https://makersuite.google.com/app/apikey)
+Get your Gemini API key: [Google AI Studio](https://aistudio.google.com/apikey)
 
 ## 📁 Project Structure
 
