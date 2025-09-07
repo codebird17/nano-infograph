@@ -30,24 +30,65 @@ Transform YouTube video content into stunning visual infographs with customizabl
 
 ### **Option 2: Local Development**
 
+#### **Prerequisites**
+- **Node.js 20.x** or higher
+- **Python 3.9+** with pip
+- **Git**
+
+#### **Quick Setup**
+
 ```bash
-# Clone the repository
+# 1. Clone the repository
 git clone https://github.com/codebird17/nano-infograph.git
 cd nano-infograph
 
-# Install dependencies
+# 2. Install Node.js dependencies
 npm install
-cd python-api && pip install -r requirements.txt && cd ..
 
-# Set up environment
+# 3. Install Python dependencies
+cd python-api
+pip install -r requirements.txt
+cd ..
+
+# 4. Set up environment variables
 cp env.example .env.local
-# Add your GEMINI_API_KEY to .env.local
+```
 
-# Start development servers
+#### **Configure Environment**
+Open `.env.local` and add your API key:
+```bash
+GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+Get your API key from: [Google AI Studio](https://aistudio.google.com/apikey)
+
+#### **Start Development Servers**
+
+**Option A: Automatic (Recommended)**
+```bash
+chmod +x dev-start.sh
 ./dev-start.sh
 ```
 
-Visit `http://localhost:3000` to start creating infographs!
+**Option B: Manual**
+```bash
+# Terminal 1 - Start Python API
+cd python-api
+python3 main.py
+
+# Terminal 2 - Start Next.js app
+npm run dev
+```
+
+#### **Access the Application**
+- **Frontend**: [http://localhost:3000](http://localhost:3000)
+- **Python API**: [http://localhost:8001](http://localhost:8001)
+
+#### **Testing the Setup**
+1. Paste any YouTube URL in the input field
+2. Click "Fetch Transcript" - you should see a sample transcript
+3. The app will automatically generate a summary and infograph prompt
+4. Select a style and click "Generate Infograph" to test Gemini integration
 
 ## 🎬 How It Works
 
@@ -157,9 +198,7 @@ Gemini 2.5 Flash Image is **essential** to our application - it transforms stati
 
 ## 📖 Documentation
 
-- [`SETUP.md`](./SETUP.md) - Detailed setup instructions
-- [`VERCEL-DEPLOY.md`](./VERCEL-DEPLOY.md) - Vercel deployment guide
-- [`gemini.md`](./gemini.md) - Hackathon submission writeup
+All setup and deployment instructions are included in this README file.
 
 ## 🎊 Demo
 
@@ -187,6 +226,6 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 **🏆 Built for hackathons • ⚡ Powered by Gemini 2.5 Flash Image • 🎨 Minimal design**
 
-[Live Demo](https://nano-infograph.vercel.app) • [Documentation](./SETUP.md) • [Deploy](https://vercel.com/new/clone?repository-url=https://github.com/codebird17/nano-infograph)
+[Live Demo](https://nano-infograph.vercel.app) • [Deploy to Vercel](https://vercel.com/new/clone?repository-url=https://github.com/codebird17/nano-infograph)
 
 </div>
