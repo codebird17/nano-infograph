@@ -4,6 +4,10 @@
 
 Transform YouTube video content into stunning visual infographs with customizable styles, real-time editing, and AI-powered summarization.
 
+## 🚀 Live Demo
+
+**Try it now:** [https://nano-infograph.vercel.app/](https://nano-infograph.vercel.app/)
+
 [![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/codebird17/nano-infograph)
 
 ## ✨ Features
