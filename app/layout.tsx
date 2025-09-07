@@ -5,9 +5,8 @@ import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
-  generator: 'v0.app',
+  title: 'Nano Infograph',
+  description: 'AI-powered YouTube transcript to infograph generator using Gemini 2.5 Flash Image. Transform video content into stunning visual infographs.',
 }
 
 export default function RootLayout({
