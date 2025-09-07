@@ -201,7 +201,7 @@ export async function fetchYoutubeTranscript(url: string, maxLength: number = 50
     if (error instanceof TypeError && error.message.includes('fetch')) {
       return {
         success: false,
-        error: "Could not connect to Python API. Please ensure the Python server is running on http://localhost:8001"
+        error: "Transcript service is temporarily unavailable. This feature requires a backend service to fetch YouTube transcripts. For local development, start the Python server with 'cd python-api && python3 main.py'."
       }
     }
     

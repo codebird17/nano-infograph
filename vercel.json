@@ -1,7 +1,1 @@
-{
-  "functions": {
-    "api/transcript.py": {
-      "runtime": "@vercel/python"
-    }
-  }
-}
+{}
