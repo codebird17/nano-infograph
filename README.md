@@ -8,8 +8,6 @@ Transform YouTube video content into stunning visual infographs with customizabl
 
 **Try it now:** [https://nano-infograph.vercel.app/](https://nano-infograph.vercel.app/)
 
-[![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/codebird17/nano-infograph)
-
 ## ✨ Features
 
 - **🎥 YouTube Integration**: Robust transcript extraction from any YouTube video
@@ -20,15 +18,7 @@ Transform YouTube video content into stunning visual infographs with customizabl
 - **⚡ Fast Processing**: Automatic summarization and infograph generation
 - **🔄 Version Control**: Multiple image versions with carousel navigation
 
-## 🚀 Quick Start
-
-### **Option 1: Deploy to Vercel (Recommended)**
-
-1. Click the "Deploy to Vercel" button above
-2. Add your `GEMINI_API_KEY` in Vercel environment variables
-3. Deploy and start creating infographs!
-
-### **Option 2: Local Development**
+## 🚀 Local Development Setup
 
 #### **Prerequisites**
 - **Node.js 20.x** or higher
@@ -103,7 +93,7 @@ npm run dev
 - **Frontend**: Next.js 14, React 19, TailwindCSS
 - **Backend**: Python FastAPI, multiple YouTube libraries
 - **AI**: Google Gemini 2.5 Flash Image, Gemini 1.5 Flash
-- **Deployment**: Vercel (serverless functions)
+- **Deployment**: Self-hosted or cloud platforms
 - **Styling**: Minimal black and white aesthetic
 
 ## 🔧 Environment Variables
@@ -126,10 +116,9 @@ nano-infograph/
 ├── components/             # React components
 │   └── youtube-transcript.tsx  # Main component
 ├── lib/actions.ts         # Server actions & AI integration
-├── api/transcript.py      # Vercel serverless function
-├── python-api/           # Alternative FastAPI backend
-├── gemini.md             # Hackathon writeup
-└── vercel-deploy.sh      # One-click deployment
+├── api/transcript.py      # Python API endpoint
+├── python-api/           # FastAPI backend
+└── dev-start.sh          # Development startup script
 ```
 
 ## 🎯 Key Features
@@ -179,22 +168,6 @@ Our YouTube Infograph Generator leverages **Gemini 2.5 Flash Image** as the core
 ### Centrality to Application
 Gemini 2.5 Flash Image is **essential** to our application - it transforms static YouTube transcripts into engaging visual content. Without Gemini's advanced image generation capabilities, our tool would be limited to text processing only. The model's ability to understand complex design requirements and generate professional-quality infographs makes visual storytelling accessible to everyone.
 
-## 🚀 Deployment Options
-
-### **Vercel (Recommended)**
-- ✅ One-click deployment
-- ✅ Serverless functions for Python
-- ✅ Automatic HTTPS and CDN
-
-### **Railway**
-- ✅ Full Python support
-- ✅ No timeout limitations
-- ✅ Persistent server instances
-
-### **Local Development**
-- ✅ Full feature development
-- ✅ FastAPI backend
-- ✅ Hot reloading
 
 ## 📖 Documentation
 
@@ -226,6 +199,6 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 **🏆 Built for hackathons • ⚡ Powered by Gemini 2.5 Flash Image • 🎨 Minimal design**
 
-[Live Demo](https://nano-infograph.vercel.app) • [Deploy to Vercel](https://vercel.com/new/clone?repository-url=https://github.com/codebird17/nano-infograph)
+[Live Demo](https://nano-infograph.vercel.app) • [GitHub Repository](https://github.com/codebird17/nano-infograph)
 
 </div>
