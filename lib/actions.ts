@@ -114,6 +114,46 @@ function cleanTranscriptText(text: string): string {
 }
 
 /**
+ * Build a prioritized list of transcript API endpoints to try across environments
+ * - Browser (Vercel/Prod): use relative /api/transcript
+ * - Server (Vercel): use https://VERCEL_URL/api/transcript
+ * - Configured PYTHON_API_URL (absolute): ${PYTHON_API_URL}/transcript
+ * - Local dev fallback: http://localhost:8001/transcript
+ */
+function resolveTranscriptApiCandidates(): string[] {
+  const candidates: string[] = []
+  const isBrowser = typeof window !== 'undefined'
+  const configuredApiUrl = process.env.PYTHON_API_URL
+  const vercelUrl = process.env.VERCEL_URL
+
+  // 1) In the browser, relative path to same origin works on Vercel
+  if (isBrowser) {
+    candidates.push('/api/transcript')
+  }
+
+  // 2) Explicit configuration
+  if (configuredApiUrl) {
+    if (configuredApiUrl.startsWith('/api')) {
+      candidates.push('/api/transcript')
+    } else if (configuredApiUrl.startsWith('http')) {
+      candidates.push(`${configuredApiUrl.replace(/\/$/, '')}/transcript`)
+    }
+  }
+
+  // 3) On Vercel server runtime, construct absolute URL
+  if (!isBrowser && (process.env.VERCEL === '1' || !!vercelUrl)) {
+    const absoluteBase = vercelUrl ? `https://${vercelUrl}` : ''
+    if (absoluteBase) candidates.push(`${absoluteBase}/api/transcript`)
+  }
+
+  // 4) Local dev fallback
+  candidates.push('http://localhost:8001/transcript')
+
+  // De-duplicate while preserving order
+  return Array.from(new Set(candidates))
+}
+
+/**
  * Fetch YouTube video transcript via Python API
  */
 export async function fetchYoutubeTranscript(url: string, maxLength: number = 50000): Promise<TranscriptResult> {
@@ -132,66 +172,75 @@ export async function fetchYoutubeTranscript(url: string, maxLength: number = 50
     const videoId = extractVideoId(url)
     console.log("Extracted video ID:", videoId)
     
-    // Call Python API (supports both Vercel serverless and FastAPI)
-    const pythonApiUrl = process.env.PYTHON_API_URL || 'http://localhost:8001'
-    
-    // Determine endpoint based on deployment type
-    const isVercelDeployment = pythonApiUrl.includes('vercel.app') || pythonApiUrl.startsWith('/api')
-    const endpoint = isVercelDeployment ? '/api/transcript' : `${pythonApiUrl}/transcript`
-    
-    console.log("Using API endpoint:", endpoint)
-    
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        url: url,
-        max_length: maxLength,
-        language: 'en'
-      })
-    })
-    
-    if (!response.ok) {
-      const errorText = await response.text()
-      console.error("Python API error:", response.status, errorText)
-      return {
-        success: false,
-        error: `API request failed: ${response.status} ${response.statusText}`
+    // Try multiple endpoints with a timeout to improve resiliency across environments
+    const candidates = resolveTranscriptApiCandidates()
+    console.log('Transcript API candidates:', candidates)
+
+    const payload = JSON.stringify({ url, max_length: maxLength, language: 'en' })
+    const timeoutMs = Number(process.env.TRANSCRIPT_FETCH_TIMEOUT_MS || 15000)
+
+    let lastError: unknown = null
+    for (const endpoint of candidates) {
+      try {
+        console.log('Attempting endpoint:', endpoint)
+        const controller = new AbortController()
+        const timeout = setTimeout(() => controller.abort(), timeoutMs)
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: payload,
+          signal: controller.signal,
+        })
+        clearTimeout(timeout)
+
+        if (!response.ok) {
+          const errorText = await response.text().catch(() => '')
+          console.warn('Endpoint responded with non-OK:', response.status, errorText)
+          lastError = new Error(`API request failed: ${response.status} ${response.statusText}`)
+          continue
+        }
+
+        const result = await response.json()
+        console.log('Transcript API response meta:', {
+          success: result.success,
+          hasTranscript: !!result.transcript,
+          transcriptLength: result.transcript?.length || 0,
+          error: result.error,
+        })
+
+        if (!result.success) {
+          lastError = new Error(result.error || 'Failed to fetch transcript from Python API')
+          continue
+        }
+
+        if (!result.transcript) {
+          lastError = new Error('No transcript returned from Python API')
+          continue
+        }
+
+        console.log('Transcript processed successfully, final length:', result.transcript.length)
+        return {
+          success: true,
+          transcript: result.transcript,
+          videoId: result.video_id || videoId,
+          detectedLanguage: result.detected_language || 'en',
+          title: result.title,
+        }
+      } catch (err) {
+        lastError = err
+        const isAbort = err instanceof Error && err.name === 'AbortError'
+        console.warn('Endpoint attempt failed:', endpoint, isAbort ? 'timeout' : err)
+        continue
       }
     }
-    
-    const result = await response.json()
-    console.log("Python API response:", { 
-      success: result.success, 
-      hasTranscript: !!result.transcript,
-      transcriptLength: result.transcript?.length || 0,
-      error: result.error 
-    })
-    
-    if (!result.success) {
-      return {
-        success: false,
-        error: result.error || "Failed to fetch transcript from Python API"
-      }
-    }
-    
-    if (!result.transcript) {
-      return {
-        success: false,
-        error: "No transcript returned from Python API"
-      }
-    }
-    
-    console.log("Transcript processed successfully, final length:", result.transcript.length)
-    
+
+    // If all candidates failed
     return {
-      success: true,
-      transcript: result.transcript,
-      videoId: result.video_id || videoId,
-      detectedLanguage: result.detected_language || 'en',
-      title: result.title
+      success: false,
+      error:
+        lastError instanceof Error
+          ? `Transcript service error: ${lastError.message}`
+          : 'Transcript service is temporarily unavailable. For local development, start the Python server with \"cd python-api && python3 main.py\".',
     }
     
   } catch (error) {
