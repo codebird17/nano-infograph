@@ -129,7 +129,7 @@ nano-infograph/
 
 ## 🎊 Demo
 
-Try it live: [nano-infograph.vercel.app](https://nano-infograph.vercel.app) *(after deployment)*
+Try it live: [nano-infograph-60n5i4qpa-startupbirds-projects.vercel.app](https://nano-infograph-60n5i4qpa-startupbirds-projects.vercel.app)
 
 **Sample YouTube URLs to test:**
 - TED Talks: `https://www.youtube.com/watch?v=9bZkp7q19f0`

@@ -8,8 +8,5 @@
     "env": {
       "PYTHON_VERSION": "3.9"
     }
-  },
-  "env": {
-    "GEMINI_API_KEY": "@gemini-api-key"
   }
 }
