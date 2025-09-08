@@ -634,6 +634,24 @@ export default function YoutubeTranscript({ onTranscriptFetched }: YoutubeTransc
         </div>
       )}
 
+      {/* API Information Message - shown after all blocks are rendered */}
+      {transcript && summary && infographicPrompt && (
+        <div className="mt-6 border border-amber-200 rounded-lg bg-amber-50 p-4">
+          <div className="flex items-start gap-3">
+            <div className="w-5 h-5 bg-amber-400 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+              <div className="w-2 h-2 bg-white rounded-full"></div>
+            </div>
+            <div className="text-sm text-amber-800">
+              <p className="font-medium mb-1">Local Development Notice</p>
+              <p>
+                The Python API uses dependencies like yt-dlp, pytube, and youtube-transcript-api which don't work well in Vercel's serverless environment. 
+                For full functionality, please try running this locally.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Full Size Image Modal */}
       {isModalOpen && generatedImages.length > 0 && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-75">
